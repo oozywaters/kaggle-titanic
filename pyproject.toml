@@ -1,0 +1,17 @@
+[project]
+name = "kaggle-titanic"
+version = "0.1.0"
+description = "Kaggle Titanic: Machine Learning from Disaster"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=2.0",
+    "scikit-learn>=1.4",
+    "kaggle>=1.6",
+]
+
+[dependency-groups]
+dev = [
+    "jupyterlab>=4.0",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+]
