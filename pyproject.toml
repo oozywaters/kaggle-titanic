@@ -7,6 +7,7 @@ dependencies = [
     "pandas>=2.0",
     "scikit-learn>=1.4",
     "kaggle>=1.6",
+    "omegaconf>=2.4.0",
 ]
 
 [dependency-groups]
