@@ -1,0 +1,15 @@
+# Project
+
+Kaggle Titanic competition solution. Python, managed with uv (pyproject.toml, not requirements.txt). Run scripts with `uv run`.
+
+# Commit messages
+
+- lowercase only, including the first word
+- minimalistic: a single short line in imperative mood, e.g. "add omegaconf config", "fix fare imputation"
+- no trailing period, no conventional-commit prefixes (feat:, fix:), no co-author trailers
+- body only when the why isn't obvious from the diff
+
+# Code style
+
+- keep it simple; no over-engineering
+- docstrings for public functions, no comments narrating obvious code
