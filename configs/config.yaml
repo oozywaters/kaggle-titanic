@@ -6,6 +6,12 @@ cv:
   n_folds: 5
 
 model: random_forest
+
 params:
-  n_estimators: 300
-  random_state: 42
+  logreg:
+    max_iter: 2000
+  knn:
+    n_neighbors: 15
+  random_forest:
+    n_estimators: 300
+    random_state: 42
