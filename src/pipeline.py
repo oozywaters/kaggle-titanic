@@ -8,14 +8,16 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
+from src.features import TitanicFeatures
+
 MODELS = {
     "logreg": LogisticRegression,
     "knn": KNeighborsClassifier,
     "random_forest": RandomForestClassifier,
 }
 
-NUMERIC_FEATURES = ["Age", "Fare", "SibSp", "Parch"]
-CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked"]
+NUMERIC_FEATURES = ["Age", "Fare", "SibSp", "Parch", "Age_missing"]
+CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "Title", "AgeBin"]
 TARGET = "Survived"
 
 def build_preprocessor() -> ColumnTransformer:
@@ -30,9 +32,7 @@ def build_preprocessor() -> ColumnTransformer:
         ("cat", Pipeline(cat_steps), CATEGORICAL_FEATURES),
     ])
 
-
 def build_model(cfg):
-    """Instantiate the configured model with its per-model params."""
     if cfg.model not in MODELS:
         raise ValueError(f"unknown model {cfg.model!r}, choose from {sorted(MODELS)}")
     params = OmegaConf.to_container(cfg.params).get(cfg.model, {})
@@ -40,6 +40,7 @@ def build_model(cfg):
 
 def build_pipeline(cfg) -> Pipeline:
     return Pipeline([
+        ("features", TitanicFeatures()),
         ("preprocess", build_preprocessor()),
         ("model", build_model(cfg)),
     ])

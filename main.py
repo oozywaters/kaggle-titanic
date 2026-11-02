@@ -10,11 +10,7 @@ from omegaconf import OmegaConf
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 
 from src.config import load_config
-from src.pipeline import build_pipeline
-
-NUMERIC_FEATURES = ["Age", "Fare", "SibSp", "Parch"]
-CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked"]
-TARGET = "Survived"
+from src.pipeline import TARGET, build_pipeline
 
 def main() -> None:
     cfg = load_config()
@@ -24,8 +20,7 @@ def main() -> None:
     train = pd.read_csv(data_dir / "train.csv")
     test = pd.read_csv(data_dir / "test.csv")
 
-    features = NUMERIC_FEATURES + CATEGORICAL_FEATURES
-    X, y = train[features], train[TARGET]
+    X, y = train.drop(columns=[TARGET]), train[TARGET]
 
     pipeline = build_pipeline(cfg)
 
@@ -34,7 +29,7 @@ def main() -> None:
     print(f"CV accuracy: {scores.mean():.4f} (+/- {scores.std():.4f})")
 
     pipeline.fit(X, y)
-    predictions = pipeline.predict(test[features])
+    predictions = pipeline.predict(test)
 
     out = Path(cfg.submission_path)
     out.parent.mkdir(exist_ok=True)
