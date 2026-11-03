@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from src.features import TitanicFeatures
 
@@ -21,7 +21,10 @@ CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "Title", "AgeBin"]
 TARGET = "Survived"
 
 def build_preprocessor() -> ColumnTransformer:
-    num_steps = [("impute", SimpleImputer(strategy="median"))]
+    num_steps = [
+        ("impute", SimpleImputer(strategy="median")),
+        ("scale", StandardScaler()),
+    ]
     cat_steps = [
         ("impute", SimpleImputer(strategy="most_frequent")),
         ("onehot", OneHotEncoder(handle_unknown="ignore"))

@@ -10,6 +10,7 @@ TITLE_MAP = {
     "Rev": "Other", "Sir": "Other", "Jonkheer": "Other",
 }
 AGE_BINS = [0, 16, 32, 48, 64, np.inf]
+FARE_BINS = [-np.inf, 7.91, 14.45, 31.0, np.inf]
 
 def add_title(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
@@ -26,8 +27,20 @@ def add_age_features(df: pd.DataFrame, title_age: pd.Series) -> pd.DataFrame:
         AgeBin=pd.cut(age, bins=AGE_BINS, labels=False, include_lowest=True),
     )
 
+def add_family_features(df: pd.DataFrame) -> pd.DataFrame:
+    family_size = df["SibSp"] + df["Parch"] + 1
+    return df.assign(
+        FamilySize=family_size,
+        IsAlone=(family_size == 1).astype(int),
+    )
+
+def add_fare_bin(df: pd.DataFrame) -> pd.DataFrame:
+    return df.assign(
+        FareBin=pd.cut(df["Fare"], bins=FARE_BINS, labels=False)
+    )
+
 class TitanicFeatures(BaseEstimator, TransformerMixin):
-    """Title, Age_missing flag, title-median Age fill, AgeBin.
+    """Title, Age_missing flag, title-median Age fill, AgeBin, family features.
 
     Age medians are learned in fit (training folds only), so CV never sees
     validation data. Decisions documented in notebooks/eda.ipynb.
@@ -38,4 +51,4 @@ class TitanicFeatures(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
-        return add_age_features(add_title(X), self.title_age_)
+        return add_fare_bin(add_family_features(add_age_features(add_title(X), self.title_age_)))
