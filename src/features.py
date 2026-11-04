@@ -40,15 +40,44 @@ def add_fare_bin(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 class TitanicFeatures(BaseEstimator, TransformerMixin):
-    """Title, Age_missing flag, title-median Age fill, AgeBin, family features.
+    """Title, Age fill, AgeBin, FareBin, family features, group survival.
 
-    Age medians are learned in fit (training folds only), so CV never sees
-    validation data. Decisions documented in notebooks/eda.ipynb.
+    All statistics are learned in fit (training folds only), so CV never sees
+    validation data. FamilySurvival uses the target: 1 if any other member of
+    the passenger's ticket group is known to have survived, 0 if all known
+    others died, 0.5 if unknown. Training rows are encoded leave-one-out via
+    a PassengerId cache, so a row never sees its own outcome.
+    Decisions documented in notebooks/eda.ipynb.
     """
 
     def fit(self, X: pd.DataFrame, y=None):
         self.title_age_ = add_title(X).groupby("Title")["Age"].median()
+
+        self.group_table_ = None
+        self.loo_cache_ = {}
+        if y is not None:
+            labels = np.asarray(y)
+            groups = pd.DataFrame(
+                {"key": X["Ticket"].values, "pid": X["PassengerId"].values, "y": labels}
+            )
+            self.group_table_ = groups.groupby("key")["y"].agg(["sum", "count"])
+            for row in groups.itertuples():
+                total, size = self.group_table_.loc[row.key]
+                others_sum, others_count = total - row.y, size - 1
+                self.loo_cache_[row.pid] = (
+                    0.5 if others_count == 0 else float(others_sum > 0)
+                )
         return self
 
+    def _family_survival(self, X: pd.DataFrame) -> pd.Series:
+        if self.group_table_ is None:
+            return pd.Series(0.5, index=X.index)
+        cached = X["PassengerId"].map(self.loo_cache_)
+        any_survived = X["Ticket"].map(self.group_table_["sum"]).gt(0).astype(float)
+        known_group = X["Ticket"].isin(self.group_table_.index)
+        fallback = any_survived.where(known_group, 0.5)
+        return cached.fillna(fallback)
+
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
-        return add_fare_bin(add_family_features(add_age_features(add_title(X), self.title_age_)))
+        df = add_fare_bin(add_family_features(add_age_features(add_title(X), self.title_age_)))
+        return df.assign(FamilySurvival=self._family_survival(X))

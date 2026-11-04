@@ -27,8 +27,8 @@ MODELS = {
     "xgboost": XGBClassifier,
 }
 
-NUMERIC_FEATURES = ["SibSp", "Parch"]
-CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "Title", "AgeBin", "FareBin"]
+NUMERIC_FEATURES = ["Age", "Fare", "SibSp", "Parch", "FamilySurvival"]
+CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "Title"]
 TARGET = "Survived"
 
 def build_preprocessor() -> ColumnTransformer:
