@@ -8,6 +8,9 @@ dependencies = [
     "scikit-learn>=1.4",
     "kaggle>=1.6",
     "omegaconf>=2.4.0",
+    "catboost>=1.2.10",
+    "lightgbm>=4.7.0",
+    "xgboost>=3.2.0",
 ]
 
 [dependency-groups]

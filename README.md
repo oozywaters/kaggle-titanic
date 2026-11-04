@@ -35,7 +35,7 @@ uv run python main.py model=logreg
 uv run python main.py model=knn params.knn.n_neighbors=25 cv.n_folds=10
 ```
 
-Available models: `logreg`, `knn`, `random_forest`.
+Available models: `logreg`, `ridge`, `lasso_logreg`, `elasticnet_logreg`, `knn`, `decision_tree`, `random_forest`, `catboost`, `lightgbm`, `xgboost`.
 
 ## Submit
 

@@ -1,19 +1,30 @@
+from catboost import CatBoostClassifier
+from lightgbm import LGBMClassifier
 from omegaconf import OmegaConf
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.tree import DecisionTreeClassifier
+from xgboost import XGBClassifier
 
 from src.features import TitanicFeatures
 
 MODELS = {
     "logreg": LogisticRegression,
+    "ridge": RidgeClassifier,
+    "lasso_logreg": LogisticRegression,
+    "elasticnet_logreg": LogisticRegression,
     "knn": KNeighborsClassifier,
+    "decision_tree": DecisionTreeClassifier,
     "random_forest": RandomForestClassifier,
+    "catboost": CatBoostClassifier,
+    "lightgbm": LGBMClassifier,
+    "xgboost": XGBClassifier,
 }
 
 NUMERIC_FEATURES = ["SibSp", "Parch"]
