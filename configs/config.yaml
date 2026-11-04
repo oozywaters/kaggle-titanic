@@ -11,7 +11,7 @@ params:
   logreg:
     max_iter: 2000
   knn:
-    n_neighbors: 15
+    n_neighbors: 5
   random_forest:
     n_estimators: 300
     random_state: 42

@@ -16,8 +16,8 @@ MODELS = {
     "random_forest": RandomForestClassifier,
 }
 
-NUMERIC_FEATURES = ["Age", "Fare", "SibSp", "Parch", "Age_missing"]
-CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "Title", "AgeBin"]
+NUMERIC_FEATURES = ["SibSp", "Parch"]
+CATEGORICAL_FEATURES = ["Pclass", "Sex", "Embarked", "Title", "AgeBin", "FareBin"]
 TARGET = "Survived"
 
 def build_preprocessor() -> ColumnTransformer:

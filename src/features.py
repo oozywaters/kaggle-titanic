@@ -10,7 +10,7 @@ TITLE_MAP = {
     "Rev": "Other", "Sir": "Other", "Jonkheer": "Other",
 }
 AGE_BINS = [0, 16, 32, 48, 64, np.inf]
-FARE_BINS = [-np.inf, 7.91, 14.45, 31.0, np.inf]
+FARE_BINS = [-np.inf, 7.9104, 14.4542, 31.0, np.inf]
 
 def add_title(df: pd.DataFrame) -> pd.DataFrame:
     return df.assign(
