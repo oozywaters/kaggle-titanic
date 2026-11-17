@@ -15,7 +15,7 @@ class Config:
     seed: int = 42
     data_dir: str = "data"
     submission_path: str = "submissions/${model}_submission.csv"
-    model: str = "random_forest"
+    model: str = "catboost"
     cv: CVConfig = field(default_factory=CVConfig)
     ensemble: EnsembleConfig = field(default_factory=EnsembleConfig)
     params: dict = field(default_factory=dict)
