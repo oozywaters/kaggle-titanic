@@ -37,7 +37,13 @@ uv run python main.py model=mlp params.mlp.dropout=0.3 cv.n_folds=10
 
 Available models: `logreg` (baseline), `ridge`, `lasso_logreg`, `elasticnet_logreg`, `knn`, `decision_tree`, `random_forest`, `catboost`, `lightgbm`, `xgboost`, `mlp` (PyTorch), plus ensembles `voting_soft`, `voting_hard`, `stacking_logreg`, `stacking_ridge` (base models set via `ensemble.estimators`).
 
-Best so far: **catboost, CV accuracy 0.847** (public LB 0.780). Full analysis in `notebooks/eda.ipynb`.
+## Compare models
+
+```sh
+uv run python compare.py
+```
+
+Cross-validates every model (ensembles included) and prints a ranked table. Best so far: **catboost, CV accuracy 0.847** (public LB 0.780). Full analysis in `notebooks/eda.ipynb`.
 
 ## Submit
 
@@ -49,6 +55,7 @@ uv run kaggle competitions submit -c titanic -f submissions/catboost_submission.
 
 ```
 ├── main.py                # entry point: load config, train with CV, write submission
+├── compare.py             # cross-validate all models, print ranked table
 ├── configs/
 │   └── config.yaml        # experiment settings (model, hyperparams, CV, ensembles)
 ├── src/
