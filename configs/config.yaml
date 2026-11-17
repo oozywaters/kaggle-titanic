@@ -31,6 +31,7 @@ params:
     random_state: ${seed}
   random_forest:
     n_estimators: 300
+    min_samples_leaf: 5
     random_state: ${seed}
   catboost:
     iterations: 500

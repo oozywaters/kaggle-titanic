@@ -43,7 +43,7 @@ Available models: `logreg` (baseline), `ridge`, `lasso_logreg`, `elasticnet_logr
 uv run python compare.py
 ```
 
-Cross-validates every model (ensembles included) and prints a ranked table. Best so far: **catboost, CV accuracy 0.847** (public LB 0.780). Full analysis in `notebooks/eda.ipynb`.
+Cross-validates every model (ensembles included) and prints a ranked table. Best so far: **random_forest, CV accuracy 0.852** (best submitted: catboost, public LB 0.780). Full analysis in `notebooks/eda.ipynb`.
 
 ## Submit
 
