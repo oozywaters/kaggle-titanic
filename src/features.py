@@ -29,23 +29,22 @@ class TitanicFeatures(BaseEstimator, TransformerMixin):
     def fit(self, X: pd.DataFrame, y):
         self.title_age_ = add_title(X).groupby("Title")["Age"].median()
 
-        groups = pd.DataFrame(
-            {"key": X["Ticket"].values, "pid": X["PassengerId"].values, "y": np.asarray(y)}
-        )
-        self.group_table_ = groups.groupby("key")["y"].agg(["sum", "count"])
-        self.loo_cache_ = {}
-        for row in groups.itertuples():
-            total, size = self.group_table_.loc[row.key]
-            others_sum, others_count = total - row.y, size - 1
-            self.loo_cache_[row.pid] = (
-                0.5 if others_count == 0 else float(others_sum > 0)
-            )
+        # FamilySurvival: did anyone else on my ticket survive? (1/0, 0.5 = alone/unknown;
+        # leave-one-out so a training row never sees its own outcome)
+        y = pd.Series(np.asarray(y), index=X.index)
+        tickets = X["Ticket"]
+        self.group_survivors_ = y.groupby(tickets).sum()
+
+        others_survived = y.groupby(tickets).transform("sum") - y
+        others_count = y.groupby(tickets).transform("size") - 1
+        loo = np.where(others_count == 0, 0.5, (others_survived > 0).astype(float))
+        self.loo_cache_ = dict(zip(X["PassengerId"], loo))
         return self
 
     def _family_survival(self, X: pd.DataFrame) -> pd.Series:
         cached = X["PassengerId"].map(self.loo_cache_)
-        any_survived = X["Ticket"].map(self.group_table_["sum"]).gt(0).astype(float)
-        known_group = X["Ticket"].isin(self.group_table_.index)
+        any_survived = X["Ticket"].map(self.group_survivors_).gt(0).astype(float)
+        known_group = X["Ticket"].isin(self.group_survivors_.index)
         return cached.fillna(any_survived.where(known_group, 0.5))
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
