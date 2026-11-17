@@ -7,8 +7,7 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
-# single-threaded torch avoids a segfault from the duplicate OpenMP runtimes
-# that torch and catboost/lightgbm/xgboost each bundle on macOS
+# avoids a macOS segfault: torch and the boosting libs bundle conflicting OpenMP runtimes
 torch.set_num_threads(1)
 
 ACTIVATIONS = {"relu": nn.ReLU, "gelu": nn.GELU, "tanh": nn.Tanh}
@@ -16,12 +15,7 @@ OPTIMIZERS = {"adam": torch.optim.Adam, "adamw": torch.optim.AdamW, "sgd": torch
 
 
 class TorchMLPClassifier(BaseEstimator, ClassifierMixin):
-    """MLP for tabular classification, usable inside an sklearn Pipeline.
-
-    Architecture and training are fully driven by constructor arguments:
-    hidden layer sizes, activation, batchnorm, dropout, optimizer, learning
-    rate, weight decay, cosine scheduler, epochs and batch size.
-    """
+    """MLP for tabular classification, usable inside an sklearn Pipeline."""
 
     def __init__(
         self,

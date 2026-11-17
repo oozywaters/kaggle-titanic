@@ -40,14 +40,12 @@ def add_fare_bin(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 class TitanicFeatures(BaseEstimator, TransformerMixin):
-    """Title, Age fill, AgeBin, FareBin, family features, group survival.
+    """Title, Age fill, bins, family features, group survival.
 
-    All statistics are learned in fit (training folds only), so CV never sees
-    validation data. FamilySurvival uses the target: 1 if any other member of
-    the passenger's ticket group is known to have survived, 0 if all known
-    others died, 0.5 if unknown. Training rows are encoded leave-one-out via
-    a PassengerId cache, so a row never sees its own outcome.
-    Decisions documented in notebooks/eda.ipynb.
+    All statistics are learned in fit, so CV folds never leak. FamilySurvival
+    (1 = another ticket-group member survived, 0 = all known others died,
+    0.5 = unknown) uses the target, so training rows are encoded leave-one-out
+    by PassengerId. Decisions documented in notebooks/eda.ipynb.
     """
 
     def fit(self, X: pd.DataFrame, y=None):
